@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Modal from "./components/Modal";
 import axios from "axios";
 // import {IconContext} from "react-icons"
-import {FaCheck, FaEdit, FaTrash} from "react-icons/fa"
+import {FaCheck, FaEdit, FaPlus, FaTrash} from "react-icons/fa"
 import './App.css';
 
 
@@ -86,15 +86,17 @@ class App extends Component {
 
   renderTabList = () => {
     return (
-      <div className="nav nav-tabs">
+      <div className="nav nav-pills">
         <span
-          className={this.state.viewCompleted ? "nav-link active" : "nav-link"}
+          // className={this.state.viewCompleted ? "nav-link active" : "nav-link"}
+          className={this.state.viewCompleted ? "btn btn-sm btn-outline-dark active rounded-lg" : "btn btn-sm btn-outline-dark mr-2 rounded-lg"}
           onClick={() => this.displayCompleted(true)}
         >
           Done
         </span>
         <span
-          className={this.state.viewCompleted ? "nav-link" : "nav-link active"}
+          // className={this.state.viewCompleted ? "nav-link" : "nav-link active"}
+          className={this.state.viewCompleted ? "btn btn-sm btn-outline-dark ml-2 rounded-lg" : "btn btn-sm btn-outline-dark active rounded-lg"}
           onClick={() => this.displayCompleted(false)}
         >
           To Do
@@ -164,6 +166,7 @@ class App extends Component {
                   className="btn btn-primary"
                   onClick={this.createItem}
                 >
+                  <FaPlus />
                   Add task
                 </button>
               </div>
