@@ -1,34 +1,10 @@
 import React, { Component } from "react";
 import Modal from "./components/Modal";
 import axios from "axios";
+// import {IconContext} from "react-icons"
+import {FaCheck, FaEdit, FaTrash} from "react-icons/fa"
+import './App.css';
 
-
-// const todoItems = [
-//   {
-//     id: 1,
-//     title: "Go to Market",
-//     description: "Buy ingredients to prepare dinner",
-//     completed: true,
-//   },
-//   {
-//     id: 2,
-//     title: "Study",
-//     description: "Read Algebra and History textbook for the upcoming test",
-//     completed: false,
-//   },
-//   {
-//     id: 3,
-//     title: "Sammy's books",
-//     description: "Go to library to return Sammy's books",
-//     completed: true,
-//   },
-//   {
-//     id: 4,
-//     title: "Article",
-//     description: "Write article on how to use Django with React",
-//     completed: false,
-//   },
-// ];
 
 class App extends Component {
   constructor(props) {
@@ -82,6 +58,13 @@ class App extends Component {
     .then((res) => this.refreshList());
   };
 
+  handleComplete = (item) => {
+    item.completed = true;
+    axios
+        .put(`/api/todos/${item.id}/`, item)
+        .then((res) => this.refreshList());
+  };
+
   createItem = () => {
     const item = { title: "", description: "", completed: false };
 
@@ -108,13 +91,13 @@ class App extends Component {
           className={this.state.viewCompleted ? "nav-link active" : "nav-link"}
           onClick={() => this.displayCompleted(true)}
         >
-          Complete
+          Done
         </span>
         <span
           className={this.state.viewCompleted ? "nav-link" : "nav-link active"}
           onClick={() => this.displayCompleted(false)}
         >
-          Incomplete
+          To Do
         </span>
       </div>
     );
@@ -132,7 +115,7 @@ class App extends Component {
         className="list-group-item d-flex justify-content-between align-items-center"
       >
         <span
-          className={`todo-title mr-2 ${
+          className={`todo-title mr-2 col-md-8 ${
             this.state.viewCompleted ? "completed-todo" : ""
           }`}
           title={item.description}
@@ -140,17 +123,29 @@ class App extends Component {
           {item.title}
         </span>
         <span>
+          <button hidden={this.state.viewCompleted}
+            className="btn btn-success mr-2"
+            onClick={() => this.handleComplete(item)}
+          >
+            <div>
+              <FaCheck />
+            </div>
+          </button>
           <button
             className="btn btn-secondary mr-2"
             onClick={() => this.editItem(item)}
           >
-            Edit
+            <div>
+              <FaEdit />
+            </div>
           </button>
           <button
             className="btn btn-danger"
             onClick={() => this.handleDelete(item)}
           >
-            Delete
+            <div>
+              <FaTrash />
+            </div>
           </button>
         </span>
       </li>
