@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import {
   Button,
   Modal,
@@ -70,6 +71,17 @@ export default class CustomModal extends Component {
                   onChange={this.handleChange}
                 />
                 Completed
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input
+                  type="checkbox"
+                  name="saved"
+                  checked={this.state.activeItem.saved}
+                  onChange={this.handleChange}
+                />
+                Save task to favorite todos list
               </Label>
             </FormGroup>
           </Form>

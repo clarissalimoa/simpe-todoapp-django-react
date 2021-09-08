@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import Modal from "./components/Modal";
+import Modal from "./components/ModalCombined";
 import axios from "axios";
-// import {IconContext} from "react-icons"
 import {FaCheck, FaEdit, FaPlus, FaTrash} from "react-icons/fa"
 import './App.css';
 
@@ -13,6 +12,7 @@ class App extends Component {
       viewCompleted: false,
       todoList: [],
       modal: false,
+      modal2: false,
       activeItem: {
         title: "",
         description: "",
@@ -38,6 +38,10 @@ class App extends Component {
     this.setState({ modal: !this.state.modal });
   };
 
+  toggle2 = () => {
+    this.setState({ modal2: !this.state.modal2 });
+  };
+
   handleSubmit = (item) => {
     this.toggle();
 
@@ -47,6 +51,24 @@ class App extends Component {
         .then((res) => this.refreshList());
       return;
     }
+    axios
+      .post("/api/todos/", item)
+      .then((res) => this.refreshList());
+    // if(item.saved){
+    //   const newItem = { title: item.title, description: item.description};
+    //   axios
+    //   .post("/api/savedtodos/", newItem)
+    //   .then((res) => this.refreshList());
+    // }
+    if(item.saved){
+      axios
+      .post("/api/savedtodos/", item)
+      .then((res) => this.refreshList());
+    }
+  };
+
+  handleSubmitSaved = (item) => {
+    this.toggle2();
     axios
       .post("/api/todos/", item)
       .then((res) => this.refreshList());
@@ -71,6 +93,11 @@ class App extends Component {
     this.setState({ activeItem: item, modal: !this.state.modal });
   };
 
+  openSavedListModal = () => {
+    const item = { title: "", description: "", completed: false };
+    this.setState({ activeItem: item, modal2: !this.state.modal2 });
+  };
+
   editItem = (item) => {
     this.setState({ activeItem: item, modal: !this.state.modal });
   };
@@ -88,14 +115,12 @@ class App extends Component {
     return (
       <div className="nav nav-pills">
         <span
-          // className={this.state.viewCompleted ? "nav-link active" : "nav-link"}
           className={this.state.viewCompleted ? "btn btn-sm btn-outline-dark active rounded-lg" : "btn btn-sm btn-outline-dark mr-2 rounded-lg"}
           onClick={() => this.displayCompleted(true)}
         >
           Done
         </span>
         <span
-          // className={this.state.viewCompleted ? "nav-link" : "nav-link active"}
           className={this.state.viewCompleted ? "btn btn-sm btn-outline-dark ml-2 rounded-lg" : "btn btn-sm btn-outline-dark active rounded-lg"}
           onClick={() => this.displayCompleted(false)}
         >
@@ -163,11 +188,23 @@ class App extends Component {
             <div className="card p-3">
               <div className="mb-4">
                 <button
-                  className="btn btn-primary"
+                  className="btn btn-primary mr-2"
                   onClick={this.createItem}
                 >
-                  <FaPlus />
+                  <span>
+                    <FaPlus />
+                  </span>
                   Add task
+                </button>
+
+                <button 
+                  className="btn btn-primary mr-2"
+                  onClick={this.openSavedListModal}
+                >
+                  <span>
+                    <FaPlus />
+                  </span>
+                  Add task from Saved List
                 </button>
               </div>
               {this.renderTabList()}
@@ -180,8 +217,17 @@ class App extends Component {
         {this.state.modal ? (
           <Modal
             activeItem={this.state.activeItem}
+            selectedModal ={'modal1'}
             toggle={this.toggle}
             onSave={this.handleSubmit}
+          />
+        ) : null}
+        {this.state.modal2 ? (
+          <Modal
+            activeItem={this.state.activeItem}
+            selectedModal ={'modal2'}
+            toggle={this.toggle2}
+            onSave={this.handleSubmitSaved}
           />
         ) : null}
       </main>
